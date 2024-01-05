@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Laravel\Scout\Searchable;
 
 /**
 * Post Model
@@ -12,7 +13,11 @@ use Illuminate\Database\Query\Builder;
 */
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
+
+    public function searchableAS(): string {
+        return 'posts_index';
+    }
 
     public $fillable = [
         'title',

@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $post = new Post();
         $post->title = $request->input('title');
         $post->content = $request->input('content');
@@ -20,7 +21,8 @@ class PostController extends Controller
         return redirect('/');
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $post = Post::find($id);
 
         if (!$post) {
@@ -30,7 +32,16 @@ class PostController extends Controller
         return view('posts.show', ['post' => $post]);
     }
 
-    public function comment($id, Request $request) {
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        $posts = Post::search($query)->get() ?? [];
+
+        return view('index', ['posts' => $posts]);
+    }
+
+    public function comment($id, Request $request)
+    {
         $comment = new Comment();
         $comment->content = $request->input('content');
         $comment->user_id = $request->user()->id;
@@ -41,7 +52,8 @@ class PostController extends Controller
         return redirect("/posts/{$id}");
     }
 
-    public function like($id, Request $request) {
+    public function like($id, Request $request)
+    {
         $like = new Like();
         $like->user_id = $request->user()->id;
         $like->post_id = $id;
@@ -53,11 +65,11 @@ class PostController extends Controller
         return redirect("/posts/{$id}");
     }
 
-    public function dislike($id, Request $request) {
+    public function dislike($id, Request $request)
+    {
         $like = Like::where(['user_id' => $request->user()->id, 'post_id' => $id]);
         $like->delete();
 
         return redirect("/posts/{$id}");
     }
-
 }

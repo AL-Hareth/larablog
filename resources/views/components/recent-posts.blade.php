@@ -1,28 +1,34 @@
-@php
-$posts = [];
+@props(['posts'])
 
-if(auth()->check() && auth()->user()->followees()->count() > 0) {
-    $followedUsers = auth()->user()->followees()->get();
+<?php
 
-    foreach ($followedUsers as $followedUser) {
-        array_push($posts, ...$followedUser->posts()->get());
+
+$postsList = request()->query('query') ? $posts : [];
+
+if(!request()->query('query')) {
+    if(auth()->check() && auth()->user()->followees()->count() > 0) {
+        $followedUsers = auth()->user()->followees()->get();
+
+        foreach ($followedUsers as $followedUser) {
+            array_push($postsList, ...$followedUser->posts()->get());
+        }
+
+        array_push($postsList, ...auth()->user()->posts()->get());
+        shuffle($postsList);
+    } else {
+        $all = App\Models\Post::all();
+        $postsList = $all->count() > 5 ? $all->random(5) : $all->random($all->count());
     }
-
-    array_push($posts, ...auth()->user()->posts()->get());
-    shuffle($posts);
-} else {
-    $all = App\Models\Post::all();
-    $posts = $all->count() > 5 ? $all->random(5) : $all->random($all->count());
 }
 
-@endphp
+?>
 
-@if(count($posts) > 0)
-@foreach($posts as $post)
+@if(count($postsList) > 0)
+@foreach($postsList as $post)
 <div class="text-gray-300 border border-gray-500 py-4 px-5 rounded-lg mb-4">
-    <h3 class="my-3 flex justify-between">
+    <h3 class="my-3 flex flex-col sm:flex-row justify-between">
         <a class="text-2xl hover:text-white transition ease-in-out delay-150" href="{{ route('users.show', $post->user->id) }}">{{ $post->user->name }}</a>
-        <span>{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
+        <span class="text-sm sm:text-md">{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
     </h3>
     <p class="text-xl underline mb-4"><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></p>
     <p class="text-md">{{ $post->content }}</p>

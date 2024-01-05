@@ -38,9 +38,9 @@ if (auth()->check()) {
     <h3 class="text-2xl font-semibold pb-3">Add Comment</h3>
     <form method="post" action="{{ route('posts.comment', $post->id) }}">
         @csrf
-        <div class="flex justify-between items-center">
-            <input type="text" class="flex-1 text-gray-300 border border-gray-500 p-2 mr-2 rounded-lg bg-slate-900" name="content" placeholder="Add a comment" />
-            <button class="bg-cyan-500 text-white p-2 rounded-md">Submit your Comment</button>
+        <div class="flex flex-col items-stretch sm:flex-row justify-between sm:items-center">
+            <input type="text" class="flex-1 text-gray-300 border border-gray-500 p-2 sm:mr-2 rounded-lg bg-slate-900" name="content" placeholder="Add a comment" />
+            <button class="bg-cyan-500 text-white p-2 rounded-md mt-2 sm:mt-0">Submit your Comment</button>
         </div>
     </form>
 </div>

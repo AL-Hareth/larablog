@@ -9,13 +9,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Builder;
+use Laravel\Scout\Searchable;
 
 /**
  * @mixin Builder
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Searchable;
+
+    public function searchableAs(): string {
+        return 'users_index';
+    }
 
     /**
      * The attributes that are mass assignable.

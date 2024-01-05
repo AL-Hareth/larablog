@@ -8,3 +8,5 @@ Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::post('posts/comment/{id}', [PostController::class, 'comment'])->name('posts.comment');
 Route::post('posts/like/{id}', [PostController::class, 'like'])->name('posts.like');
 Route::post('posts/dislike/{id}', [PostController::class, 'dislike'])->name('posts.dislike');
+Route::get('search/', [PostController::class, 'search'])->name('posts.search');
+

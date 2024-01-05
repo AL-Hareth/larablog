@@ -35,7 +35,7 @@ $posts = $user->posts();
     <h3 class="text-2xl font-semibold pb-3 text-gray-300">Posts:</h3>
     @foreach($posts->get() as $post)
     <div class="text-gray-300 shadow shadow-gray-300/50 py-4 px-5 rounded-lg mb-4">
-        <a href="{{ route('posts.show', $post->id) }}" class="block pb-3">
+        <a href="{{ route('posts.show', $post->id) }}" class="pb-3 flex flex-col sm:flex-row justify-between sm:items-center">
             <h3 class="inline text-2xl font-semibold pb-3 underline">{{ $post->title }}</h3>
             <span>{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
         </a>
