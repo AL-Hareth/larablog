@@ -1,16 +1,41 @@
-FROM composer:1.9.0 as build
-WORKDIR /app
-COPY . /app
-RUN composer global require hirak/prestissimo && composer install
+# Use an official PHP runtime as a parent image
+FROM php:8.0-apache
 
-FROM php:8.2-apache-stretch
-RUN docker-php-ext-install pdo pdo_mysql
+# Set the working directory in the container
+WORKDIR /var/www/html
 
-EXPOSE 8080
-COPY --from=build /app /var/www/
-COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY .env.example /var/www/.env
-RUN chmod 777 -R /var/www/storage/ && \
-    echo "Listen 8080" >> /etc/apache2/ports.conf && \
-    chown -R www-data:www-data /var/www/ && \
-    a2enmod rewrite
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    zip \
+    unzip \
+    libzip-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_pgsql zip
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Copy composer.json and install dependencies
+COPY composer.json .
+COPY composer.lock .
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install --no-scripts --no-autoloader
+
+# Copy the rest of the application code
+COPY . .
+
+# Generate the optimized autoloader and configuration
+RUN composer dump-autoload --optimize
+
+# Set permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Expose port 80
+EXPOSE 80
+
+# Run Apache
+CMD ["apache2-foreground"]
+
