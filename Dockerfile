@@ -13,7 +13,7 @@ RUN apt-get update && \
     libzip-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql zip
+RUN docker-php-ext-install zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
