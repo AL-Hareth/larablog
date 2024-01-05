@@ -11,6 +11,6 @@
         <button class="bg-cyan-500 text-white p-2 m-2 rounded-md">Post</button>
     </form>
     @else
-    <h2 class="text-xl font-semibold pb-3 text-center">Log in to get in contact with people</h2>
+    <h2 class="text-xl font-semibold pb-3 text-center">Log in to write a post</h2>
     @endif
 </div>

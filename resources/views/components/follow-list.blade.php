@@ -3,7 +3,7 @@
 @endphp
 
 <div class="sticky top-10 flex flex-col items-center shadow shadow-cyan-500/50 rounded-lg py-4">
-    <h2 class="text-2xl font-semibold pb-3">People You Are Following</h2>
+    <h2 class="text-center text-2xl font-semibold pb-3">People You Are Following</h2>
     @if(auth()->check())
     @foreach($followees as $followee)
         <a
