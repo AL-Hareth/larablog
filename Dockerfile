@@ -1,16 +1,13 @@
+FROM ubuntu:latest
+
 # Use an official PHP runtime as a parent image
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 # Set the working directory in the container
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    git \
-    zip \
-    unzip \
-    libzip-dev
+RUN apt-get update && apt-get install -y tzdata git zip unzip libzip-dev
 
 # Install PHP extensions
 RUN docker-php-ext-install zip
@@ -22,10 +19,14 @@ RUN a2enmod rewrite
 COPY composer.json .
 COPY composer.lock .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-scripts --no-autoloader
 
 # Copy the rest of the application code
 COPY . .
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+RUN composer update && composer install -n --no-scripts --no-autoloader
+
 
 # Generate the optimized autoloader and configuration
 RUN composer dump-autoload --optimize
