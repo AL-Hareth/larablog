@@ -21,12 +21,6 @@ RUN apt-get update && \
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo_pgsql pgsql
 
-# Copy entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
-# Give execute permissions to the script
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
