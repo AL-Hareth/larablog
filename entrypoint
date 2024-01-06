@@ -2,7 +2,7 @@
 
 # Run database migrations
 echo "before php artisan migrate"
-php artisan migrate
+php artisan migrate --force
 echo "after php artisan migrate"
 
 # Start Apache in the foreground
