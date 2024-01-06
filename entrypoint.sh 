@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Run database migrations
+php artisan migrate
+
+# Start Apache in the foreground
+apache2-foreground
+

@@ -45,6 +45,5 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expose port 80
 EXPOSE 80
 
-# Run Apache
-CMD ["apache2-foreground"]
-
+# Set the entrypoint
+ENTRYPOINT ["/var/www/html/entrypoint.sh"]
