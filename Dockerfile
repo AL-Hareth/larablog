@@ -39,8 +39,6 @@ RUN composer update && composer install -n --no-scripts --no-autoloader
 # Generate the optimized autoloader and configuration
 RUN composer dump-autoload --optimize
 
-RUN php artisan migrate
-
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
