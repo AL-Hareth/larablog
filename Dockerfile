@@ -21,6 +21,12 @@ RUN apt-get update && \
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo_pgsql pgsql
 
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Give execute permissions to the script
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
@@ -45,5 +51,6 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expose port 80
 EXPOSE 80
 
-# Set the entrypoint
-ENTRYPOINT ["/var/www/html/entrypoint"]
+# Run Apache
+CMD ["apache2-foreground"]
+
