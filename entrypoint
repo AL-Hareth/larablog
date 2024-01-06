@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Run database migrations
+echo "before php artisan migrate"
 php artisan migrate
+echo "after php artisan migrate"
 
 # Start Apache in the foreground
 apache2-foreground
