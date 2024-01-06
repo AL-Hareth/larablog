@@ -46,4 +46,4 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 EXPOSE 80
 
 # Set the entrypoint
-ENTRYPOINT ["/var/www/html/entrypoint.sh"]
+ENTRYPOINT ["/var/www/html/entrypoint"]
