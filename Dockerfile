@@ -21,9 +21,6 @@ RUN apt-get update && \
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo_pgsql pgsql
 
-# Restart the apache service
-RUN service apache2 restart
-
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
