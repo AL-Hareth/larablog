@@ -1,16 +1,28 @@
-FROM ubuntu:latest
+# FROM ubuntu:latest
 
 # Use an official PHP runtime as a parent image
-FROM php:8.1-apache
+FROM php:apache
 
 # Set the working directory in the container
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y tzdata git zip unzip libzip-dev
+RUN apt-get update && \
+    apt-get install -y \
+    tzdata \
+    git \
+    zip \
+    unzip \
+    libzip-dev \
+    libpq-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install zip pdo_pgsql pgsql
+
+# Restart the apache service
+RUN service apache2 restart
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -27,9 +39,10 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 
 RUN composer update && composer install -n --no-scripts --no-autoloader
 
-
 # Generate the optimized autoloader and configuration
 RUN composer dump-autoload --optimize
+
+RUN php artisan migrate
 
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
