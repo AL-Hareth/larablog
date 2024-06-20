@@ -24,14 +24,14 @@
                 name="query"
             />
         </form>
-        <div class="flex justify-between text-white pt-5">
+        <div class="flex flex-col-reverse md:flex-row md:justify-between text-white pt-5">
             <div class="m-3 flex-1 lg:block hidden">
                 <x-follow-list />
             </div>
             <div class="m-3 flex-1">
                 <x-recent-posts :posts="$posts" />
             </div>
-            <div class="m-3 flex-1 md:block hidden">
+            <div class="m-3 flex-1 md:block ">
                 <x-create-post />
             </div>
         </div>
