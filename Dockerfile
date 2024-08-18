@@ -45,6 +45,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expose port 80
 EXPOSE 80
 
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Run Apache
 CMD ["apache2-foreground"]
 
