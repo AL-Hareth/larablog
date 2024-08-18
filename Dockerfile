@@ -1,50 +1,42 @@
-# FROM ubuntu:latest
+# Use the official PHP image as the base
+FROM php:8.2-fpm
 
-# Use an official PHP runtime as a parent image
-FROM php:apache
-
-# Set the working directory in the container
-WORKDIR /var/www/html
+# Set working directory
+WORKDIR /var/www
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    tzdata \
-    git \
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libzip-dev \
     zip \
     unzip \
-    libzip-dev \
-    libpq-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    git \
+    curl \
+    libpq-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install zip pdo_pgsql pgsql
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip opcache intl
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer.json and install dependencies
-COPY composer.json .
-COPY composer.lock .
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copy existing application directory contents
+COPY . /var/www
 
-# Copy the rest of the application code
-COPY . .
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
+# Change current user to www-data
+USER www-data
 
-RUN composer update && composer install -n --no-scripts --no-autoloader
-
-# Generate the optimized autoloader and configuration
-RUN composer dump-autoload --optimize
-
-# Set permissions
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-# Expose port 80
-EXPOSE 80
-
-# Run Apache
-CMD ["apache2-foreground"]
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
 
