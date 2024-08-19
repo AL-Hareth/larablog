@@ -1,45 +1,19 @@
-# Use the official PHP image as the base
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
-# Set working directory
-WORKDIR /var/www
+RUN apk add --no-cache nginx wget postgresql-dev \
+    && docker-php-ext-install pdo_pgsql
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libpq-dev \
-    libxml2-dev \
-    libcurl4-openssl-dev \
-    libssl-dev
+RUN mkdir -p /run/nginx
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip opcache intl
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN mkdir -p /app
+COPY . /app
 
-# Copy existing application directory contents
-COPY . /var/www
+RUN sh -c "wget http://getcomposer.org/composer.phar && chmod a+x composer.phar && mv composer.phar /usr/local/bin/composer"
+RUN cd /app && \
+    /usr/local/bin/composer install --no-dev
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+RUN chown -R www-data: /app
 
-# Change current user to www-data
-USER www-data
-
-# Expose port 9000 and start php-fpm server
-EXPOSE 80
-
-RUN echo "ServerName larablog.alhareth.xyz" >> /etc/apache2/apache2.conf
-
-CMD ["php-fpm"]
-
+CMD sh /app/docker/startup.sh
